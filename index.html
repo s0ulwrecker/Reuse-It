@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AquaShift | Reusable vs. Single-Use AI Detector & Tracker</title>
+    <!-- Google Fonts for Clean Typography Hierarchy -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-deep: #020617;
+            --primary-blue: #0284c7;
+            --ocean-glow: #38bdf8;
+            --deep-cyan: #0369a1;
+            --card-glass: rgba(15, 23, 42, 0.75);
+            --border-glass: rgba(56, 189, 248, 0.2);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--bg-deep);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(2, 132, 199, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(56, 189, 248, 0.1) 0%, transparent 40%);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 40px 20px;
+            overflow-x: hidden;
+        }
+
+        .main-wrapper {
+            max-width: 950px;
+            width: 100%;
+            background: var(--card-glass);
+            border: 1px solid var(--border-glass);
+            border-radius: 28px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        /* Header Section: Balance & Alignment */
+        header {
+            padding: 50px 40px 30px 40px;
+            text-align: center;
+            position: relative;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(2, 132, 199, 0.2);
+            color: var(--ocean-glow);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            padding: 6px 16px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 16px;
+        }
+
+        header h1 {
+            font-size: 2.75rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+            letter-spacing: -0.03em;
+            background: linear-gradient(135deg, #ffffff 30%, #38bdf8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        header p {
+            font-size: 1.15rem;
+            color: var(--text-muted);
+            max-width: 620px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .content-body {
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 35px;
+        }
+
+        /* 1. Community Significance Section */
+        .community-card {
+            background: linear-gradient(135deg, rgba(3, 105, 161, 0.15), rgba(15, 23, 42, 0.6));
+            border-left: 4px solid var(--ocean-glow);
+            border: 1px solid rgba(56, 189, 248, 0.15);
+            border-radius: 0 16px 16px 0;
+            padding: 28px 32px;
+        }
+
+        .community-card h2 {
+            color: var(--text-main);
+            font-size: 1.35rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .community-card h2::before {
+            content: '';
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: var(--ocean-glow);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--ocean-glow);
+        }
+
+        .community-card p {
+            color: var(--text-muted);
+            line-height: 1.7;
+            font-size: 1.02rem;
+        }
+
+        /* 2 & 3. Teachable Machine Integration & Aesthetic Blue Interface */
+        .scanner-card {
+            background: rgba(2, 6, 23, 0.6);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            text-align: center;
+        }
+
+        .scanner-card h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 8px;
+        }
+
+        .scanner-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 24px;
+        }
+
+        .iframe-container {
+            position: relative;
+            width: 100%;
+            height: 480px;
+            border-radius: 14px;
+            overflow: hidden;
+            border: 2px solid rgba(56, 189, 248, 0.25);
+            background: #000;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* New Section: Sustainability Tips & Habit Tracker */
+        .tracker-section {
+            background: rgba(2, 6, 23, 0.5);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(56, 189, 248, 0.15);
+        }
+
+        .tracker-section h3 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 6px;
+            text-align: center;
+        }
+
+        .tracker-section > p {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+        }
+
+        .tips-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+        }
+
+        .tip-card {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            padding: 18px;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+            cursor: pointer;
+        }
+
+        .tip-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--ocean-glow);
+        }
+
+        .tip-card h4 {
+            color: var(--ocean-glow);
+            font-size: 1.05rem;
+            margin-bottom: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .tip-card p {
+            color: var(--text-muted);
+            font-size: 0.88rem;
+            line-height: 1.5;
+        }
+
+        .checkbox-container {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 2px solid var(--ocean-glow);
+            border-radius: 4px;
+            position: relative;
+        }
+
+        .tip-card.completed {
+            background: rgba(3, 105, 161, 0.2);
+            border-color: var(--primary-blue);
+        }
+
+        .tip-card.completed h4 span::after {
+            content: '✓';
+            color: var(--ocean-glow);
+            font-weight: bold;
+        }
+
+        footer {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            letter-spacing: 0.05em;
+        }
+
+        /* Responsive Design Adaptation */
+        @media (max-width: 768px) {
+            header { padding: 35px 20px 20px 20px; }
+            header h1 { font-size: 2.1rem; }
+            .content-body { padding: 20px; gap: 25px; }
+            .community-card, .scanner-card, .tracker-section { padding: 20px; }
+            .iframe-container { height: 380px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="main-wrapper">
+        <!-- Header: Balance and Alignment -->
+        <header>
+            <div class="badge">AI Environmental Initiative</div>
+            <h1>AquaShift Vision</h1>
+            <p>Empowering circular communities through real-time material classification.</p>
+        </header>
+
+        <div class="content-body">
+            <!-- 1. Significance to the Community -->
+            <div class="community-card">
+                <h2>Significance to the Community</h2>
+                <p>
+                    Single-use plastics and disposables heavily clog municipal infrastructure, overflow landfills, and fragment local aquatic ecosystems. Conversely, cultivating reusable habits drastically reduces resource strain. By providing neighbors and students with an instant verification tool, this platform builds collective awareness, steering our community toward data-informed sustainability and circular waste habits.
+                </p>
+            </div>
+
+            <!-- 2 & 3. Aesthetic Blue Theme & Model Embedding -->
+            <div class="scanner-card">
+                <h3>Live Material Classifier</h3>
+                <p>Grant camera access to test whether an item is single-use or reusable instantly.</p>
+                
+                <div class="iframe-container">
+                    <!-- Embedded Teachable Machine Model URL -->
+                    <iframe src="https://teachablemachine.withgoogle.com/models/nLhCs8ibl/" allow="camera"></iframe>
+                </div>
+            </div>
+
+            <!-- New Addition: Interactive Habit Tracker & Tips Section -->
+            <div class="tracker-section">
+                <h3>Sustainable Habit Tracker & Tips</h3>
+                <p>Click any card below to track your daily commitment to replacing single-use items.</p>
+                
+                <div class="tips-grid">
+                    <div class="tip-card" onclick="this.classList.toggle('completed')">
+                        <h4>Reusable Bottle <span><div class="checkbox-container"></div></span></h4>
+                        <p>Swap single-use plastic water bottles for a durable stainless steel bottle.</p>
+                    </div>
+                    <div class="tip-card" onclick="this.classList.toggle('completed')">
+                        <h4>Cloth Shopping Bags <span><div class="checkbox-container"></div></span></h4>
+                        <p>Keep foldable canvas bags in your bag or car for zero-waste grocery trips.</p>
+                    </div>
+                    <div class="tip-card" onclick="this.classList.toggle('completed')">
+                        <h4>Reusable Cutlery <span><div class="checkbox-container"></div></span></h4>
+                        <p>Ditch plastic takeaway forks and straws by packing a compact travel utensil set.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 AquaShift Initiative &bull; Hosted on GitHub Pages</p>
+    </footer>
+
+</body>
+</html>
